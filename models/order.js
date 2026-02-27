@@ -2,93 +2,93 @@ import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema({
 
-    orderId : {
-        type : String,
-        required : true,
-        unique : true
+    orderId: {
+        type: String,
+        required: true,
+        unique: true
     },
 
-    email : {
-        type : String,  
-        required : true
+    email: {
+        type: String,
+        required: true
     },
 
-    name : {
-        type : String,
-        required : true
+    name: {
+        type: String,
+        required: true
     },
 
-    phone : {
-        type : String,
-        required : true
+    phone: {
+        type: String,
+        required: true
     },
 
-    address : {
-        type : String,
-        required : true
+    address: {
+        type: String,
+        required: true
     },
 
-    status : {
-        type : String,
-        required : true,
-        default : "pending"
+    status: {
+        type: String,
+        required: true,
+        default: "pending"
     },
 
-    total  : {
-        type : Number,
-        required : true
+    total: {
+        type: Number,
+        required: true
     },
 
-    labelledTotal : {  // Add this field to store labeled price total
-        type : Number,
-        required : true
+    labelledTotal: {
+        type: Number,
+        required: true
     },
 
-    products : [
+    products: [
         {
-            productInfo : {
+            productInfo: {
 
-            productId : {
-                type : String,
-                required : true
-            },
+                productId: {
+                    type: String,
+                    required: true
+                },
 
-            name : {
-                type : String,
-                required : true
-            },
+                name: {
+                    type: String,
+                    required: true
+                },
 
-            altNames : [{  // Fixed typo: altnames -> altNames to match Product schema
-                type : String,
-            }],
+                altNames: [{
+                    type: String,
+                }],
 
-            images : [{
-                type : String
-            }],
+                images: [{
+                    type: String
+                }],
 
-            labeledPrice : {  // Fixed: labeledPrice (single 'l') to match Product schema
-                type : Number,
-                required : true
-            },
+                labeledPrice: {
+                    type: Number,
+                    required: true
+                },
 
-            price : {
-                type : Number,
-                required : true
-            },
+                price: {
+                    type: Number,
+                    required: true
+                },
 
-            quantity : {
-                type : Number,
-                required : true
-            },
+                quantity: {
+                    type: Number,
+                    required: true
+                },
 
-            } 
+            }
         }
     ],
-    
-    date : {
-        type : Date,
-        required : true,
-        default : Date.now
+
+    date: {
+        type: Date,
+        required: true,
+        default: Date.now
     }
 })
 

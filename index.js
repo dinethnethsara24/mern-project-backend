@@ -21,6 +21,14 @@ mongoose.connect("mongodb+srv://dinethnethsara24_db_user:d8Dzx4kff77TmuQ6@cluste
 
 const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Cross-Origin-Opener-Policy",
+    "same-origin-allow-popups"
+  );
+  next();
+});
+
 app.use(bodyParser.json());
 app.use(cors());
 

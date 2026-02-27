@@ -1,26 +1,26 @@
-import Product from '../models/product.js'; 
-import { isAdmin } from './userController.js';  
+import Product from '../models/product.js';
+import { isAdmin } from './userController.js';
 
 
- export  async function getProducts (req, res) {
+export async function getProducts(req, res) {
 
 
-    try{
+    try {
 
-        if(isAdmin(req)){
+        if (isAdmin(req)) {
             const product = await Product.find()
             res.json(product);
-        }else{
-            const product = await Product.find({isAvailable : true});
+        } else {
+            const product = await Product.find({ isAvailable: true });
             res.json(product);
         }
-        
 
-    }catch(err){
+
+    } catch (err) {
 
         res.status(500).json({
-            message : "Failed to get products",
-            error : err
+            message: "Failed to get products",
+            error: err
 
         })
 
@@ -28,100 +28,100 @@ import { isAdmin } from './userController.js';
 }
 
 
-export function postProducts (req, res){
+export function postProducts(req, res) {
 
-if(!isAdmin(req)){
-    res.status(403).json(
-        {
-            message : "User not authorized to add products"
-        }
+    if (!isAdmin(req)) {
+        res.status(403).json(
+            {
+                message: "User not authorized to add products"
+            }
 
-    )
+        )
 
-    return
-}
+        return
+    }
 
 
     const product = new Product(req.body);
 
-    product.save().then(()=>{
+    product.save().then(() => {
         res.json({
-            message : "Product added successfully"
+            message: "Product added successfully"
         })
     }).catch((err) => {
         res.json({
-            message : "Product added failed",
-            error : err
+            message: "Product added failed",
+            error: err
         })
     })
 }
 
- 
-export async function deleteProduct (req, res){
 
-    if(!isAdmin(req)){
+export async function deleteProduct(req, res) {
+
+    if (!isAdmin(req)) {
         res.status(403).json(
             {
-                message : "User not authorized to delete products"
+                message: "User not authorized to delete products"
             }
         )
 
         return
     }
 
-    try{
-        await Product.deleteOne({productId : req.params.productId})
+    try {
+        await Product.deleteOne({ productId: req.params.productId })
 
         res.json({
-            message : "Product deleted successfully"
-        }) 
-    }catch(err){
+            message: "Product deleted successfully"
+        })
+    } catch (err) {
         res.status(500).json({
-            message : "Product deletion failed",
-            error : err
+            message: "Product deletion failed",
+            error: err
         })
     }
 }
 
 
-export async function updateProduct(req, res){
+export async function updateProduct(req, res) {
 
-    if(!isAdmin(req)){
+    if (!isAdmin(req)) {
         res.status(403).json(
-        {
-            message : "User not authorized to update products"
-        }
+            {
+                message: "User not authorized to update products"
+            }
         )
-    return    
+        return
     }
 
 
     const productId = req.params.productId
     const updatingData = req.body
 
-    try{
+    try {
 
         await Product.updateOne(
-            {productId : productId},
+            { productId: productId },
             updatingData
 
         )
 
         res.json({
             message: "Product updated successfully",
-        
+
         })
 
 
-    }catch(err){
+    } catch (err) {
 
         res.status(500).json(
             {
-            message : "Product update failed",
-            error : err.message
+                message: "Product update failed",
+                error: err.message
             }
         )
-    
+
     }
 }
 
@@ -130,41 +130,60 @@ export async function getproductbyId(req, res) {
 
     const productId = req.params.productId;
 
-    try{
+    try {
 
 
-        const product = await Product.findOne({productId : productId});
+        const product = await Product.findOne({ productId: productId });
 
-        if(product == null){
+        if (product == null) {
             res.status(404).json({
-                message : "Product not found"
+                message: "Product not found"
             })
 
             return
 
-        }else{
+        } else {
 
-            if(product.isAvailable){
+            if (product.isAvailable) {
                 res.json(product);
-            }else{
-                    if(!isAdmin(req)){
-                        res.status(403).json({
-                        message : "product not found"
+            } else {
+                if (!isAdmin(req)) {
+                    res.status(403).json({
+                        message: "product not found"
                     })
                     return
 
-                }else{
-                res.json(product);
+                } else {
+                    res.json(product);
                 }
             }
-            
 
-        }    
+
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to get product",
+            error: err
+        })
+    }
+}
+
+
+export async function searchProducts(req,res){
+    const searchQuery = req.params.query
+    try{
+        const products = await Product.find({
+            $or:[
+                {productName :  {$regex : searchQuery, $options : "i"}},
+                {altNames : {$elemMatch : {$regex : searchQuery, $options : "i"}}}
+            ],
+            isAvailable : true
+        })
+        res.json(products)
     }catch(err){
         res.status(500).json({
-            message : "Failed to get product",
+            message : "Internal server error",
             error : err
         })
     }
-}    
-
+}
